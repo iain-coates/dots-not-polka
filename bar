@@ -1,0 +1,44 @@
+#!/bin/sh
+
+clock() {
+	date '+%e %b %H:%M %Z'
+}
+
+battery0() {
+	BAT0C=/sys/class/power_supply/BAT0/capacity
+	BAT0S=/sys/class/power_supply/BAT0/status
+
+	test "`cat $BAT0S`" = "Unknown" && echo 'Idle' || sed -n p $BAT0S
+	sed -n p $BAT0C
+}
+
+battery1() {
+	BAT1C=/sys/class/power_supply/BAT1/capacity
+	BAT1S=/sys/class/power_supply/BAT1/status
+
+	test "`cat $BAT1S`" = "Unknown" && echo 'Idle' || sed -n p $BAT1S
+	sed -n p $BAT1C
+}
+
+desktop() {
+	DESK=`xprop -root _NET_CURRENT_DESKTOP | awk '{print $3}'`
+	echo $((DESK+1))
+}
+
+volume() {
+	amixer -D pulse get Master | grep 'Front Left: Playback' | grep -o '...%' | sed 's/\[//' | sed 's/%//' | sed 's/ //'
+}
+
+# Handle output with buffers
+while :; do
+	buf=""
+	buf="${buf} %{l}%{F#70788D}%{B#E7E8EB} DSK: $(desktop) "
+	buf="${buf} %{c} $(clock) "
+	buf="${buf} %{r} VOL: $(volume)% "
+	buf="${buf} BA0: $(battery0)% "
+	buf="${buf} BA1: $(battery1)%  "
+
+	echo $buf
+	sleep 1
+done |
+lemonbar -p -f -misc-dejavu sans-medium-o-normal--0-0-0-0-p-0-ascii-0 -g 1342x30+12+12 -u 2 -U #30302F | bash
