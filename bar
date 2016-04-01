@@ -1,7 +1,7 @@
 #!/bin/sh
 
 clock() {
-	date '+%e %b %H:%M %Z'
+	date '+%a, %e %b %H:%M %Z'
 }
 
 battery0() {
@@ -31,14 +31,16 @@ volume() {
 
 # Handle output with buffers
 while :; do
-	buf=""
-	buf="${buf} %{l}%{F#70788D}%{B#E7E8EB} DSK: $(desktop) "
+	buf=" "
+	buf="${buf} %{F#2F343F}%{B#2F343F} "
+	buf="${buf} %{l}%{F#D3DAE3}%{T-} Desktop $(desktop) "
 	buf="${buf} %{c} $(clock) "
 	buf="${buf} %{r} VOL: $(volume)% "
 	buf="${buf} BA0: $(battery0)% "
 	buf="${buf} BA1: $(battery1)%  "
+	buf="${buf} %{F#2F343F} "
 
 	echo $buf
 	sleep 1
 done |
-lemonbar -p -f -misc-dejavu sans-medium-o-normal--0-0-0-0-p-0-ascii-0 -g 1342x30+12+12 -u 2 -U #30302F | bash
+lemonbar -p -f DroidSans-10 -g 1342x30+12+12 -u 2 -U #2F343F | bash
