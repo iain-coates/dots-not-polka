@@ -1,0 +1,9 @@
+#!/bin/sh
+
+while :; do
+	buf=" "
+	buf="${buf} %{l}%{B#4F8D4E} "
+	echo $buf
+	sleep 1
+done |
+lemonbar -p -g 1366x36 -b | bash

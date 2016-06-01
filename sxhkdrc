@@ -4,11 +4,15 @@
 
 # terminal emulator
 super + Return
-	gnome-terminal
+	xfce4-terminal
 
 # program launcher
 super + r
-	rofi -show run -bw 0 -font "Drod Sans 10" -hide-scrollbar -bg "#2F343F" -bgalt "#2F343F" -bc "#D3DAE3" -fg "#D3DAE3" -hlbg "#2F343F" -hlfg "#4D68B0" -separator-style none
+	rofi -show run -bw 0 -font "Droid Sans Mono 10" -hide-scrollbar -color-window "#3e515a, #00bcd4, #3e515a" -color-normal "#3e515a, #ffffff, #3e515a, #3e515a, #00bcd4" -color-active "#3e515a, #4084d6, #3e515a, #3e515a, #6995b7" -color-urgent "#3e515a, #f0544c, #3e515a, #3e515a, #f0544c" -separator-style "none"
+
+# window switcher
+super + w
+	rofi -show window -bw 0 -font "Droid Sans Mono 10" -hide-scrollbar -color-window "#3e515a, #00bcd4, #3e515a" -color-normal "#3e515a, #ffffff, #3e515a, #3e515a, #00bcd4" -color-active "#3e515a, #4084d6, #3e515a, #3e515a, #6995b7" -color-urgent "#3e515a, #f0544c, #3e515a, #3e515a, #f0544c" -separator-style "none"
 
 # make sxhkd reload its configuration files:
 super + Escape
@@ -43,7 +47,7 @@ super + g
 #
 
 # set the window state
-super + {t,shift + t,space,f}
+super + {t,shift + t,space,shift + f}
 	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
 
 # set the node flags
@@ -147,3 +151,7 @@ XF86MonBrightnessUp + {_,shift}
 	{xbacklight -inc 20, xbacklight -set 100}
 XF86MonBrightnessDown + {_,shift}
 	{xbacklight -dec 20, xbacklight -set 0}
+
+#Firefox launch
+super + f
+	firefox

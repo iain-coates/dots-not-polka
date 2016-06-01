@@ -4,43 +4,86 @@ clock() {
 	date '+%a, %e %b %H:%M %Z'
 }
 
-battery0() {
-	BAT0C=/sys/class/power_supply/BAT0/capacity
-	BAT0S=/sys/class/power_supply/BAT0/status
-
-	test "`cat $BAT0S`" = "Unknown" && echo 'Idle' || sed -n p $BAT0S
-	sed -n p $BAT0C
-}
-
-battery1() {
-	BAT1C=/sys/class/power_supply/BAT1/capacity
-	BAT1S=/sys/class/power_supply/BAT1/status
-
-	test "`cat $BAT1S`" = "Unknown" && echo 'Idle' || sed -n p $BAT1S
-	sed -n p $BAT1C
-}
-
-desktop() {
-	DESK=`xprop -root _NET_CURRENT_DESKTOP | awk '{print $3}'`
-	echo $((DESK+1))
+vol_icon() {
+	echo -n -e "\uf028"
 }
 
 volume() {
 	amixer -D pulse get Master | grep 'Front Left: Playback' | grep -o '...%' | sed 's/\[//' | sed 's/%//' | sed 's/ //'
 }
 
+wifi_icon() {
+	echo -n -e "\uf1eb"
+}
+
+wifi_strength() {
+	grep wlp3s0 /proc/net/wireless | awk '{ print int($3 * 100 / 70) }'
+}
+
+no_icon() {
+	BAT0S=`cat /sys/class/power_supply/BAT0/status`
+	if [ "$BAT0S" = "Discharging" ]; then
+        	echo -n -e "\uf078"
+	elif [ "$BAT0S" = "Charging" ]; then
+        	echo -n -e "\uf077"
+	else
+        	echo -n -e "\uf068"
+	fi
+}
+
+one_icon() {
+        BAT1S=`cat /sys/class/power_supply/BAT1/status`
+        if [ "$BAT1S" = "Discharging" ]; then
+                echo -n -e "\uf078"
+        elif [ "$BAT1S" = "Charging" ]; then
+                echo -n -e "\uf077"
+        else
+                echo -n -e "\uf068"
+        fi
+}
+
+battery0() {
+        BAT0C=/sys/class/power_supply/BAT0/capacity
+        sed -n p $BAT0C
+}
+
+battery1() {
+        BAT1C=/sys/class/power_supply/BAT1/capacity
+        sed -n p $BAT1C
+}
+
+desktop() {
+        DESK=`xprop -root _NET_CURRENT_DESKTOP | awk '{print $3}'`
+        echo $((DESK+1))
+}
+
+caps() {
+	CAPS=`xset -q | grep Caps`
+
+	if [ "$CAPS" = "    00: Caps Lock:   off    01: Num Lock:    off    02: Scroll Lock: off" ]; then
+        	echo " "
+	else
+        	echo -n -e " \uf023"
+	fi
+}
+
 # Handle output with buffers
 while :; do
 	buf=" "
-	buf="${buf} %{F#2F343F}%{B#2F343F} "
-	buf="${buf} %{l}%{F#D3DAE3}%{T-} Desktop $(desktop) "
+	buf="${buf} %{F#C1C8CC} %{B#3E515A}Desktop $(desktop) "
+	buf="${buf} $(caps) "
 	buf="${buf} %{c} $(clock) "
-	buf="${buf} %{r} VOL: $(volume)% "
-	buf="${buf} BA0: $(battery0)% "
-	buf="${buf} BA1: $(battery1)%  "
-	buf="${buf} %{F#2F343F} "
+	buf="${buf} %{r} $(vol_icon) "
+	buf="${buf} $(volume) "
+	buf="${buf} $(no_icon) "
+	buf="${buf} $(battery0) "
+	buf="${buf} $(one_icon) "
+	buf="${buf} $(battery1) "
+	buf="${buf} $(wifi_icon) "
+	buf="${buf} $(wifi_strength) "
+	buf="${buf} %{B#3E515A} "
 
 	echo $buf
 	sleep 1
 done |
-lemonbar -p -f DroidSans-10 -g 1342x30+12+12 -u 2 -U #2F343F | bash
+lemonbar -p -f DroidSansMono-10 -f FontAwesome-12 -g 1366x30 -b | bash

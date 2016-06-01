@@ -1,0 +1,21 @@
+BAT0C=`cat /sys/class/power_supply/BAT0/capacity`
+        if [[ "$BAT0C" < 20 ]]; then
+                echo "....o"
+        fi
+
+        if [[ "$BAT0C" < 40 ]]; then
+                echo "...oo"
+        fi
+
+        if [[ "$BAT0C" < 60 ]]; then
+                echo "...ooo"
+        fi
+
+        if [[ "$BAT0C" < 80 ]]; then
+                echo "..oooo"
+        fi
+
+        if [[ "$BAT0C" < 100 ]]; then
+                echo -e ".oooo"
+        fi
+
